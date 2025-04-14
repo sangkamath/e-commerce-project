@@ -1,13 +1,31 @@
-import Image from "next/image";
+"use client";
+import { Button, buttonVariants } from "@/components/button";
+import { Badge } from "@/components/badge";
+import Link from "next/link";
+import { Input } from "@/components/input";
 
-export default async function Home() {
-  const products = await getProducts();
-  const collections = await getCollections();
-  console.log(products);
-  console.log(collections);
-
+export default function Home() {
   return (
-    <main className="flex items-center justify-center gap-10 px-4">
+    <main className="flex min-h-screen w-full items-center justify-center gap-10 px-4">
+      <div className="flex items-center gap-4" >
+      <Badge variant="brand">Default</Badge>
+         <Badge variant="error" size="medium">
+           Default
+         </Badge>
+         <Badge variant="neutral" size="large">
+           Default
+         </Badge>
+         <Badge variant="success" size="medium">
+           Default
+         </Badge>
+         <Badge variant="warning" size="small">
+           Default
+         </Badge>
+
+         <div className="w-full max-w-[300px]">
+         <Input type="text" placeholder="name@email.com" />
+       </div>
+      </div>
     </main>
   );
 }
