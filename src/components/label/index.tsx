@@ -18,5 +18,7 @@ import { cn } from "@/lib/utils";
      );
    },
  );
+
+ Label.displayName = "Label";
  
  export { Label };

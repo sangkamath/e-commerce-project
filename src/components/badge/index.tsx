@@ -37,5 +37,7 @@ import { cn } from "@/lib/utils";
      />
    );
  }
+
+ Badge.displayName = "Badge";
  
  export { Badge };
