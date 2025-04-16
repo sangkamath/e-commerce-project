@@ -1,17 +1,18 @@
-import { Input } from "@/components/input";
-import { Label } from "@/components/label";
-import { Mail } from "lucide-react";
 import Product from "@/lib/models";
 import { IProduct } from "@/lib/definitions";
 import ProductDetail from "@/components/product-detail";
 import { connectDB } from "@/lib/db";
+import React, { Suspense } from "react";
 
-import React from "react";
+
 export default async function Home() {
 
   return (
     <main className="min-h-screen w-full bg-gray-300 p-4">
-      <ProductDetail product={[]} />
+      <div className="hidden border-border" />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProductDetail product={[]} />
+      </Suspense>
     </main>
   );
 }
