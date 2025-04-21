@@ -22,15 +22,31 @@ export function ProductDetailInfo({ product }: any) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const sizeParam = searchParams.get("size") ?? "xs";
-    const colorParam = searchParams.get("color") ?? "green";
+    let defaultSize = sizes[0] ?? null;
+    let defaultColor = colors[0] ?? null;
+
+    let sizeParam: string | number = searchParams.get("size") ?? defaultSize;
+    const colorParam = searchParams.get("color") ?? defaultColor;
+
+    if (!isNaN(parseFloat(sizeParam as string))) {
+        sizeParam = parseFloat(sizeParam as string);
+    }
 
     const [selected, setSelected] = useState<string>(colorParam);
-    const [curSize, setCurSize] = useState<string>(sizeParam);
+    const [curSize, setCurSize] = useState<string | number>(sizeParam);
     const [quantity, setQuantity] = useState<number>(1);
 
-    const filterItemBySize = inventory.filter((item: any) => item.size === sizeParam);
-    const itemStock = filterItemBySize.find((item: any) => item.color === colorParam);
+    const itemStock = inventory.find(
+        (item: any) =>
+            (item.size === sizeParam ||
+                (sizeParam === "std" && item.size === null) ||
+                (typeof sizeParam === "number" && item.size === sizeParam)) &&
+            item.color === colorParam,
+    );
+
+    const filteredItemByColor: any = inventory.filter(
+        (item: any) => item.color === colorParam,
+    );
 
     const handleSelect = (color: string) => {
         setSelected(color);
@@ -144,19 +160,22 @@ export function ProductDetailInfo({ product }: any) {
                     </h6>
                     <RadioGroup value={curSize} onChange={handleSize} className="">
                         <div className="flex flex-wrap gap-4">
-                            {sizes.map((s: string, i: number) => (
+                            {filteredItemByColor?.map((item: any) => (
                                 <Radio
-                                    key={i}
-                                    value={s}
+                                    key={item.sku}
+                                    value={item.size ?? "std"}
+                                    disabled={item.stock === 0}
                                     className={({ checked }) =>
                                         cn(
-                                            "relative flex h-[48px] w-[64px] cursor-pointer items-center justify-center rounded border border-neutral-200 bg-white focus:outline-none data-active:ring-2 data-active:ring-indigo-500 data-active:ring-offset-2",
+                                            "relative flex h-[48px] w-[64px] cursor-pointer items-center justify-center rounded border border-neutral-200 bg-white focus:outline-none data-active:ring-2 data-active:ring-indigo-500 data-active:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
                                             checked && "ring-2 ring-indigo-500 ring-offset-2"
                                         )
                                     }
                                 >
                                     <Label className="text-base font-medium leading-6 text-neutral-900">
-                                        {adjustSize(s)}
+                                        {typeof item.size === "number"
+                                            ? item.size
+                                            : adjustSize(item.size)}
                                     </Label>
                                 </Radio>
                             ))}
@@ -181,7 +200,7 @@ export function ProductDetailInfo({ product }: any) {
                         <Minus className="h-4 w-4" />
                     </button>
                     <span className="text-sm font-medium leading-5 text-neutral-600">
-                        {quantity}
+                        {quantity > itemStock?.stock ? itemStock?.stock : quantity}
                     </span>
                     <button
                         disabled={itemStock?.stock === quantity}
@@ -198,7 +217,7 @@ export function ProductDetailInfo({ product }: any) {
                     </button>
                 </div>
             </div>
-            <Button variant="primary" size="large">
+            <Button variant="primary" size="large" disabled={!itemStock || itemStock.stock === 0}>
                 Add to Cart
             </Button>
             <Accordion type="multiple" className="mt-6 marker:text-neutral-600">

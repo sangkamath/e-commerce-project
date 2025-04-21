@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -15,6 +15,8 @@
     "@headlessui/react": "^2.2.1",
     "@mui/material": "^7.0.2",
     "@radix-ui/react-accordion": "^1.2.4",
+    "@types/json-schema": "^7.0.15",
+    "@types/ws": "^8.18.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.488.0",
@@ -22,9 +24,12 @@
     "next": "15.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-horizontal-scrolling-menu": "^8.2.0",
+    "swiper": "^11.2.6",
     "tailwind-merge": "^3.2.0",
     "tailwindcss-animate": "^1.0.7",
-    "tw-animate-css": "^1.2.5"
+    "tw-animate-css": "^1.2.5",
+    "ws": "^8.18.1"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
