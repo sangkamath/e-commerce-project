@@ -23,8 +23,9 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Product } from "@/lib/definitions";
-import ProductReview from "@/components/product-review";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import dynamic from "next/dynamic";
+import ProductReview from "@/components/product-review";
 
 interface ProductDetailProps {
     product: Product;
@@ -88,8 +89,12 @@ function ProductHeader({ product }: ProductDetailProps) {
                             {reviews > 1 && `See all ${reviews} reviews`}
                         </p>
                     </DialogTrigger>
-                    <DialogContent>
-                        <ProductReview />
+                    <DialogContent
+                        className={cn(
+                            "h-[90%] w-[85%] max-w-[1008px] overflow-scroll rounded-lg md:w-[68%] lg:h-[624px]",
+                        )}
+                    >
+                        <ProductReview productName={"urban-drift-bucket-hat"} />
                     </DialogContent>
                 </Dialog>
             </div>
@@ -299,15 +304,4 @@ function ProductInfo({ product }: ProductDetailProps) {
             )}
         </Accordion>
     )
-}
-
-
-interface Plans {
-    color: string;
-    label: string;
-    value: string;
-}
-interface SIZES {
-    label: string;
-    value: string;
 }
