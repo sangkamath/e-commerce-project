@@ -22,9 +22,86 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Product } from "@/lib/definitions";
+import ProductReview from "@/components/product-review";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
-export function ProductDetailInfo({ product }: any) {
-    const { name, description, reviews = 0, rating, info, inventory, colors, sizes } = product;
+interface ProductDetailProps {
+    product: Product;
+}
+
+export function ProductDetailInfo({ product }: ProductDetailProps) {
+    return (
+        <div className="flex w-full flex-1 flex-col lg:min-w-[48%]">
+            <ProductHeader product={product} />
+            <ProductController product={product} />
+            <ProductInfo product={product} />
+        </div>
+    )
+}
+
+function ProductHeader({ product }: ProductDetailProps) {
+    const { name, description, reviews = 0, rating, inventory } = product;
+    return (
+        <div className="flex flex-col">
+            <h1 className="text-3xl font-semibold leading-9 text-neutral-900 md:text-5xl md:leading-[48px]">
+                {name}
+            </h1>
+            <div className="mt-5 flex flex-col">
+                <div className="flex items-end gap-2">
+                    <span className="text-3xl font-medium leading-9 text-neutral-600">
+                        ${inventory[0].sale_price}
+                    </span>
+                    <span className="text-lg font-medium leading-7 text-neutral-400 line-through">
+                        ${inventory[0].list_price}
+                    </span>
+                </div>
+                {inventory[0].discount && (
+                    <Badge variant="warning" size="medium" className="mt-2 self-start">
+                        %{inventory[0].discount_percentage} OFF
+                    </Badge>
+                )}
+            </div>
+            <div className="mt-3 flex items-center gap-2">
+                <h6 className="text-xl font-normal leading-7 text-neutral-900">
+                    {rating}
+                </h6>
+                <Rating
+                    name="text-feedback"
+                    readOnly
+                    precision={0.5}
+                    value={rating}
+                    emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                />
+                <Dialog>
+                    <DialogTrigger>
+                        <p className="text-sm font-medium leading-5 text-indigo-700">
+                            {reviews === 0 && (
+                                <>
+                                    <span className="text-sm font-medium leading-5 text-neutral-500">
+                                        No reviews yet.
+                                    </span>
+                                    Be the first.
+                                </>
+                            )}
+                            {reviews === 1 && `See ${reviews} review`}
+                            {reviews > 1 && `See all ${reviews} reviews`}
+                        </p>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <ProductReview />
+                    </DialogContent>
+                </Dialog>
+            </div>
+            <p className="my-8 text-base font-normal leading-6 text-neutral-600">
+                {description}
+            </p>
+        </div>
+    );
+}
+
+function ProductController({ product }: ProductDetailProps) {
+    const { inventory, colors, sizes } = product;
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -65,7 +142,7 @@ export function ProductDetailInfo({ product }: any) {
     };
 
     const handleIncrease = () => {
-        if (itemStock && quantity < itemStock.stock) {
+        if (itemStock && quantity < itemStock.stock!) {
             setQuantity(quantity + 1);
         }
     }
@@ -77,54 +154,7 @@ export function ProductDetailInfo({ product }: any) {
     }
 
     return (
-        <div className="flex w-full flex-1 flex-col lg:min-w-[48%]">
-            <div className="flex flex-col">
-                <h1 className="text-3xl font-semibold leading-9 text-neutral-900 md:text-5xl md:leading-[48px]">
-                    {name}
-                </h1>
-                <div className="mt-5 flex flex-col">
-                    <div className="flex items-end gap-2">
-                        <span className="text-3xl font-medium leading-9 text-neutral-600">
-                            ${inventory[0].sale_price}
-                        </span>
-                        <span className="text-lg font-medium leading-7 text-neutral-400">
-                            ${inventory[0].list_price}
-                        </span>
-                    </div>
-                    {inventory[0].discount && <Badge variant="warning" size="medium" className="mt-2 self-start">
-                        %{inventory} OFF
-                    </Badge>}
-                </div>
-                <div className="mt-3 flex items-center gap-2">
-                    <h6 className="text-xl font-normal leading-7 text-neutral-900">
-                        {rating}
-                    </h6>
-                    <Rating
-                        name="text-feedback"
-                        readOnly
-                        value={rating}
-                        precision={0.5}
-                        emptyIcon={
-                            <StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />
-                        }
-                    />
-                    <p className="text-sm font-medium leading-5 text-indigo-700">
-                        {reviews === 0 && (
-                            <>
-                                <span className="text-sm font-medium leading-5 text-neutral-500">
-                                    No reviews yet.
-                                </span>
-                                Be the first.
-                            </>
-                        )}
-                        {reviews === 1 && `See ${reviews} review`}
-                        {reviews > 1 && `See all ${reviews} reviews`}
-                    </p>
-                </div>
-            </div>
-            <p className="my-8 text-base font-normal leading-6 text-neutral-600">
-                {description}
-            </p>
+        <>
             <div className="mb-8 flex flex-col">
                 <div>
                     <h6 className="mb-2 text-sm font-normal leading-5 text-neutral-500">
@@ -206,7 +236,7 @@ export function ProductDetailInfo({ product }: any) {
                         <Minus className="h-4 w-4" />
                     </button>
                     <span className="text-sm font-medium leading-5 text-neutral-600">
-                        {quantity > itemStock?.stock ? itemStock?.stock : quantity}
+                        {quantity > itemStock?.stock! ? itemStock?.stock : quantity}
                     </span>
                     <TooltipProvider>
                         <Tooltip>
@@ -235,34 +265,40 @@ export function ProductDetailInfo({ product }: any) {
             <Button variant="primary" size="large" disabled={!itemStock || itemStock.stock === 0}>
                 Add to Cart
             </Button>
-            <Accordion type="multiple" className="mt-6 marker:text-neutral-600">
-                {info.map(
-                    (
-                        {
-                            title,
-                            description,
-                        }: {
-                            title: string;
-                            description: String[];
-                        },
-                        index: number,
-                    ) => (
-                        <AccordionItem key={`item-${index + 1}`} value={`item-${index + 1}`}>
-                            <AccordionTrigger className="text-lg font-medium leading-7 text-neutral-900">
-                                {title}
-                            </AccordionTrigger>
-                            <AccordionContent className="mt-2 text-base font-normal leading-6 text-neutral-600">
-                                <ul className="list-inside list-disc">
-                                    {description.map((desc, index) => (
-                                        <li key={index}>{desc}</li>
-                                    ))}
-                                </ul>
-                            </AccordionContent>
-                        </AccordionItem>
-                    ),
-                )}
-            </Accordion>
-        </div>);
+        </>);
+}
+
+function ProductInfo({ product }: ProductDetailProps) {
+    const { info } = product;
+    return (
+        <Accordion type="multiple" className="mt-6 marker:text-neutral-600">
+            {info.map(
+                (
+                    {
+                        title,
+                        description,
+                    }: {
+                        title: string;
+                        description: String[];
+                    },
+                    index: number,
+                ) => (
+                    <AccordionItem key={`item-${index + 1}`} value={`item-${index + 1}`}>
+                        <AccordionTrigger className="text-lg font-medium leading-7 text-neutral-900">
+                            {title}
+                        </AccordionTrigger>
+                        <AccordionContent className="mt-2 text-base font-normal leading-6 text-neutral-600">
+                            <ul className="list-inside list-disc">
+                                {description.map((desc, index) => (
+                                    <li key={index}>{desc}</li>
+                                ))}
+                            </ul>
+                        </AccordionContent>
+                    </AccordionItem>
+                ),
+            )}
+        </Accordion>
+    )
 }
 
 
