@@ -6,11 +6,10 @@ import { getProductById } from "@/lib/services";
 
 
 export default async function Home() {
-  const product = await getProductById("voyager-hoodie");
+  const product = await getProductById("urban-drift-bucket-hat");
   console.log(product);
   return (
-    <main className="min-h-screen w-full bg-gray-300 p-4">
-      <div className="hidden border-border" />
+    <main className="min-h-screen w-full bg-gray-300 p-10">
       <Suspense fallback={<div>Loading...</div>}>
         <ProductDetail product={product} />
       </Suspense>

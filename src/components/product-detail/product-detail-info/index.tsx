@@ -16,6 +16,12 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import { adjustSize } from "@/lib/helper";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function ProductDetailInfo({ product }: any) {
     const { name, description, reviews = 0, rating, info, inventory, colors, sizes } = product;
@@ -202,19 +208,28 @@ export function ProductDetailInfo({ product }: any) {
                     <span className="text-sm font-medium leading-5 text-neutral-600">
                         {quantity > itemStock?.stock ? itemStock?.stock : quantity}
                     </span>
-                    <button
-                        disabled={itemStock?.stock === quantity}
-                        className={cn(
-                            "inline-flex h-5 w-5 items-center justify-center text-neutral-600 transition-colors",
-                            {
-                                "cursor-not-allowed text-neutral-400":
-                                    itemStock?.stock === quantity,
-                            },
-                        )}
-                        onClick={handleIncrease}
-                    >
-                        <Plus className="h-4 w-4" />
-                    </button>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger
+                                disabled={itemStock?.stock === quantity}
+                                className={cn(
+                                    "inline-flex h-5 w-5 items-center justify-center text-neutral-600 transition-colors",
+                                    {
+                                        "cursor-not-allowed text-neutral-400":
+                                            itemStock?.stock === quantity,
+                                    },
+                                )}
+                                onClick={handleIncrease}
+                            >
+                                <Plus className="h-4 w-4" />
+                            </TooltipTrigger>
+                            <TooltipContent className="inline-flex items-center justify-center rounded-lg bg-neutral-950 px-3 py-2">
+                                <p className="text-xs font-medium leading-4 text-white">
+                                    {itemStock?.stock === quantity ? "Insufficient stock" : "In stock"}
+                                </p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 </div>
             </div>
             <Button variant="primary" size="large" disabled={!itemStock || itemStock.stock === 0}>
