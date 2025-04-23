@@ -15,7 +15,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 export default function ProductReview({ productName }: { productName: string }) {
     const { data, isLoading, isError, fetchNextPage, hasNextPage } = useInfiniteQuery({
         queryKey: ["reviews", productName],
-        queryFn: async ({ pageParam = 1 }) => await getProductReview("voyager-hoodie", { page: pageParam }),
+        queryFn: async ({ pageParam = 1 }) => await getProductReview(productName, { page: pageParam }),
         getNextPageParam: (lastPage, pages) =>
             lastPage.pagination.has_more ? lastPage.pagination.page + 1 : undefined,
         initialPageParam: 1,
