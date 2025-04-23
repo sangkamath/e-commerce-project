@@ -1,3 +1,4 @@
+// Helper functions for various utilities
 export function adjustSize(size: string) {
     if (size === "xs") return "XS";
     if (size === "sm") return "S";
@@ -25,4 +26,13 @@ export function formatDate(dateString: string) {
     const year = date.getFullYear();
 
     return `${monthName} ${day}, ${year}`;
+}
+
+export function getInitials(fullName: string): string {
+    const names = fullName.split(" ").filter(Boolean);
+    if(names.length === 0) return "";
+
+    const initials = names.length > 1 ? `${names[0][0]}${names[names.length-1][0]}` : names[0][0];
+
+    return initials.toUpperCase();
 }
