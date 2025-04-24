@@ -118,7 +118,7 @@ interface Pagination {
   total: number;
 }
 
-export interface ReviewResponse {
+export interface ReviewsResponse {
   aggregate: Aggregate;
   data: Review[];
   pagination: Pagination;

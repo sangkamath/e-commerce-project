@@ -10,7 +10,7 @@ import { getInitials, getRatingText } from "@/lib/helper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { useInfiniteQuery } from "@tanstack/react-query";
-
+import { ReviewsResponse } from "@/lib/definitions";
 
 export default function ProductReview({ productName }: { productName: string }) {
     const { data, isLoading, isError, fetchNextPage, hasNextPage } = useInfiniteQuery({
@@ -73,7 +73,7 @@ export default function ProductReview({ productName }: { productName: string }) 
     )
 }
 
-function ReviewsSummary({ data }: { data: any }) {
+function ReviewsSummary({ data }: { data: SummaryReview }) {
     const sortedCounts = [...data.counts].sort((a, b) => b.rating - a.rating);
 
     function getRatingColor(rating: number): string {
@@ -140,7 +140,7 @@ function ReviewsSummary({ data }: { data: any }) {
     )
 }
 
-function Reviews({ data, fetchNextPage, hasNextPage }: { data: any[], fetchNextPage: any, hasNextPage: boolean }) {
+function Reviews({ data, fetchNextPage, hasNextPage }: { data: ReviewsResponse[], fetchNextPage: () => void, hasNextPage: boolean }) {
     if (!data || !Array.isArray(data)) {
         return <div>No reviews available</div>;
     }
@@ -196,4 +196,15 @@ function Reviews({ data, fetchNextPage, hasNextPage }: { data: any[], fetchNextP
             )}
         </div>
     );
+}
+
+interface SummaryReview {
+    rating: number;
+    total: number;
+    counts: Count[];
+}
+
+interface Count {
+    count: number;
+    rating: number;
 }
