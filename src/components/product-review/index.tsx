@@ -6,14 +6,15 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Rating } from "@mui/material";
 import { StarIcon } from "lucide-react";
 import { Button } from "../button";
-import { getInitials, getRatingText } from "@/lib/helper";
+import { formatDate, getInitials, getRatingText } from "@/lib/helper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { ReviewsResponse } from "@/lib/definitions";
+import { Loader2 } from "lucide-react";
 
 export default function ProductReview({ productName }: { productName: string }) {
-    const { data, isLoading, isError, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
         queryKey: ["reviews", productName],
         queryFn: async ({ pageParam = 1 }) => await getProductReview(productName, { page: pageParam }),
         getNextPageParam: (lastPage, pages) =>
@@ -66,6 +67,7 @@ export default function ProductReview({ productName }: { productName: string }) 
                         data={allReviews}
                         fetchNextPage={fetchNextPage}
                         hasNextPage={hasNextPage}
+                        isFetchingNextPage={isFetchingNextPage}
                     />
                 </div>
             </div>
@@ -94,7 +96,7 @@ function ReviewsSummary({ data }: { data: SummaryReview }) {
     }
 
     return (
-        <div className="flex w-full flex-col  xl:max-w-[384px]">
+        <div className="flex w-full flex-col xl:max-w-[384px]">
             <div className="flex flex-col gap-2">
                 <h2 className="text-xl font-semibold leading-7 text-neutral-900">
                     Overall Rating
@@ -140,16 +142,16 @@ function ReviewsSummary({ data }: { data: SummaryReview }) {
     )
 }
 
-function Reviews({ data, fetchNextPage, hasNextPage }: { data: ReviewsResponse[], fetchNextPage: () => void, hasNextPage: boolean }) {
+function Reviews({ data, fetchNextPage, hasNextPage, isFetchingNextPage }: { data: ReviewsResponse[], fetchNextPage: () => void, hasNextPage: boolean, isFetchingNextPage: boolean }) {
     if (!data || !Array.isArray(data)) {
         return <div>No reviews available</div>;
     }
 
     return (
-            <div className="flex h-full flex-1 flex-col gap-1 md:gap-4">
-                <div className="flex h-[290px] flex-col gap-6 overflow-scroll md:h-[320px] xl:h-[420px]">
+        <div className="flex h-full flex-1 flex-col gap-1 md:gap-4">
+            <div className="flex h-[290px] flex-col gap-6 overflow-scroll md:h-[320px] xl:h-[420px]">
                 {data.map((review: any, index: number) => (
-                    <div className="flex h-full max-h-[112px] flex-col gap-4" key={index}>
+                    <div className="flex flex-col gap-4" key={index}>
                         <div className="flex gap-4">
                             <div className="relative h-12 w-12 overflow-hidden rounded-full">
                                 {review.user.avatar_url ? (
@@ -177,7 +179,7 @@ function Reviews({ data, fetchNextPage, hasNextPage }: { data: ReviewsResponse[]
                                     }
                                 />
                             </div>
-                            <p className="ml-auto">{review.created_at}</p>
+                            <p className="ml-auto">{formatDate(review.created_at)}</p>
                         </div>
                         <p className="text-base font-normal leading-6 text-neutral-600">
                             {review.content}
@@ -191,6 +193,9 @@ function Reviews({ data, fetchNextPage, hasNextPage }: { data: ReviewsResponse[]
                     className={cn("mx-auto mt-10 w-full px-5 py-3")}
                     onClick={() => fetchNextPage()}
                 >
+                    {isFetchingNextPage && (
+                        <Loader2 className="mr-2 animate-spin text-black" size={16} />
+                    )}
                     Show 10 more reviews
                 </Button>
             )}

@@ -3,6 +3,9 @@ import ProductDetail from "@/components/product-detail";
 import React, { Suspense } from "react";
 import { getProductById } from "@/lib/services";
 import { Product } from "@/lib/definitions";
+import ProductSpecifications from "@/components/product-specifications";
+import ProductsGrid from "@/components/products-grid";
+import Footer from "@/components/footer";
 
 
 export default async function Home() {
@@ -17,6 +20,12 @@ export default async function Home() {
       <Suspense fallback={<div>Loading...</div>}>
         <ProductDetail product={product} />
       </Suspense>
+
+      {/*
+      <ProductSpecifications />
+      <ProductsGrid />
+      <Footer />
+      */}
     </main>
   );
 }
