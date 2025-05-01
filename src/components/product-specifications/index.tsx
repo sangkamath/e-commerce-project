@@ -20,7 +20,7 @@ function ProductHeader() {
     return (
         <div className="flex flex-col gap-6">
             <h3 className="text-3xl font-semibold leading-9 text-neutral-900 md:text-5xl lg:leading-[48px]">
-                Discover timeless elagance
+                Discover timeless elegance
             </h3>
             <p className="text-lg font-normal leading-7 text-neutral-600">
                 Step into a world where quality meets quintessential charm with our

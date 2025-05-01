@@ -20,12 +20,9 @@ export default async function Home() {
       <Suspense fallback={<div>Loading...</div>}>
         <ProductDetail product={product} />
       </Suspense>
-
-      {/*
       <ProductSpecifications />
       <ProductsGrid />
       <Footer />
-      */}
     </main>
   );
 }

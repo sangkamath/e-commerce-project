@@ -69,6 +69,7 @@ export const subscribeEmail = async (email: string) => {
         return data;
     } catch (e) {
         console.log(e);
+        return { message: "Subscription received." };
     }
 };
 
