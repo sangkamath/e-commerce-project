@@ -76,7 +76,7 @@ export default function ProductReview({ productName }: { productName: string }) 
 }
 
 function ReviewsSummary({ data }: { data: SummaryReview }) {
-    const sortedCounts = [...data.counts].sort((a, b) => b.rating - a.rating);
+    const sortedCounts = [...data?.counts].sort((a, b) => b.rating - a.rating);
 
     function getRatingColor(rating: number): string {
         switch (rating) {
