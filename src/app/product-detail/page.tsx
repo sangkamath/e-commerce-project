@@ -15,7 +15,9 @@ import ProductDetail from "@/components/product-detail";
      <main className="">
        <ProductDetail product={product} />
        <ProductSpecifications />
+       {/*
        <ProductsGrid title={""} viewAll={false}/>
+       */}
      </main>
    );
  }
